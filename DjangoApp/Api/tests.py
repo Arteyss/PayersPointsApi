@@ -45,10 +45,12 @@ class TransactionAPIViewTestCase(APITestCase):
 class SpendPointsAPIViewTestCase(APITestCase):
     def setUp(self):
         self.url = reverse('spend-points')
-        self.transaction1 = Transaction.objects.create(payer='John', points=100)
-        self.transaction2 = Transaction.objects.create(payer='Bob', points=50)
-        self.points_to_spend_1 = {'points': 150}
-        self.points_to_spend_2 = {'points': 80}
+        self.transaction1 = Transaction.objects.create(payer='DANNON', points=300)
+        self.transaction2 = Transaction.objects.create(payer='UNILEVER', points=200)
+        self.transaction3 = Transaction.objects.create(payer='DANNON', points=-200)
+        self.transaction4 = Transaction.objects.create(payer='MILLER COORS', points=10000)
+        self.transaction5 = Transaction.objects.create(payer='DANNON', points=1000)
+        self.points_to_spend_1 = {'points': 5000}
 
     def test_spend_points_api(self):
         """
@@ -56,24 +58,20 @@ class SpendPointsAPIViewTestCase(APITestCase):
         """
         response = self.client.post(self.url, self.points_to_spend_1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [{'payer': 'Bob', 'points': -50},
-                                         {'payer': 'John', 'points': -100}])
-        self.assertEqual(Transaction.objects.count(), 4)
-
-        response = self.client.post(self.url, self.points_to_spend_2)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [{'payer': 'Bob', 'points': 0},
-                                         {'payer': 'John', 'points': -80}])
-        self.assertEqual(Transaction.objects.count(), 6)
+        self.assertEqual(response.data, [{'payer': 'DANNON', 'points': -100},
+                                         {'payer': 'MILLER COORS', 'points': -4700},
+                                         {'payer': 'UNILEVER', 'points': -200}])
+        self.assertEqual(Transaction.objects.count(), 8)
 
 
 class BalanceAPIViewTestCase(APITestCase):
     def setUp(self):
         self.url = reverse('balance')
-        self.transaction1 = Transaction.objects.create(payer='John', points=100)
-        self.transaction2 = Transaction.objects.create(payer='Bob', points=5000)
-        self.transaction3 = Transaction.objects.create(payer='John', points=200)
-        self.transaction4 = Transaction.objects.create(payer='Bob', points=-100)
+        self.transaction1 = Transaction.objects.create(payer='DANNON', points=300)
+        self.transaction2 = Transaction.objects.create(payer='UNILEVER', points=200)
+        self.transaction3 = Transaction.objects.create(payer='DANNON', points=-200)
+        self.transaction4 = Transaction.objects.create(payer='MILLER COORS', points=10000)
+        self.transaction5 = Transaction.objects.create(payer='DANNON', points=1000)
 
     def test_balance_api(self):
         """
@@ -81,4 +79,4 @@ class BalanceAPIViewTestCase(APITestCase):
         """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'John': 300, 'Bob': 4900})
+        self.assertEqual(response.data, {'DANNON': 1100, 'MILLER COORS': 10000, 'UNILEVER': 200})
