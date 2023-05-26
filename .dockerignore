@@ -1,0 +1,6 @@
+venv
+.git
+.gitignore
+.flake8
+README.md
+**/*.pyc
