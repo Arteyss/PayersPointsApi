@@ -51,6 +51,8 @@ class SpendPointsAPIViewTestCase(APITestCase):
         self.transaction4 = Transaction.objects.create(payer='MILLER COORS', points=10000)
         self.transaction5 = Transaction.objects.create(payer='DANNON', points=1000)
         self.points_to_spend_1 = {'points': 5000}
+        self.points_to_spend_2 = {'points': 6300}
+        self.points_to_spend_3 = {'points': 100}
 
     def test_spend_points_api(self):
         """
@@ -62,6 +64,16 @@ class SpendPointsAPIViewTestCase(APITestCase):
                                          {'payer': 'MILLER COORS', 'points': -4700},
                                          {'payer': 'UNILEVER', 'points': -200}])
         self.assertEqual(Transaction.objects.count(), 8)
+
+        response = self.client.post(self.url, self.points_to_spend_2)
+        self.assertEqual(response.data, [{'payer': 'DANNON', 'points': -1000},
+                                         {'payer': 'MILLER COORS', 'points': -5300},
+                                         {'payer': 'UNILEVER', 'points': 0}])
+
+        response = self.client.post(self.url, self.points_to_spend_3)
+        self.assertEqual(response.data, [{'payer': 'DANNON', 'points': 0},
+                                         {'payer': 'MILLER COORS', 'points': 0},
+                                         {'payer': 'UNILEVER', 'points': 0}])
 
 
 class BalanceAPIViewTestCase(APITestCase):
