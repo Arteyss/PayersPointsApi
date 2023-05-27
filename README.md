@@ -87,3 +87,5 @@ A subsequent call to the points balance route, after the spend, should returns t
 "MILLER COORS": 5300
 }
 ```
+
+P.s. there are ready-made tests in the repository, and if you open the project locally, there will already be a database with transactions from the example
