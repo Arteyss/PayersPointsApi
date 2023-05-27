@@ -69,11 +69,13 @@ class SpendPointsAPIViewTestCase(APITestCase):
         self.assertEqual(response.data, [{'payer': 'DANNON', 'points': -1000},
                                          {'payer': 'MILLER COORS', 'points': -5300},
                                          {'payer': 'UNILEVER', 'points': 0}])
+        self.assertEqual(Transaction.objects.count(), 10)
 
         response = self.client.post(self.url, self.points_to_spend_3)
         self.assertEqual(response.data, [{'payer': 'DANNON', 'points': 0},
                                          {'payer': 'MILLER COORS', 'points': 0},
                                          {'payer': 'UNILEVER', 'points': 0}])
+        self.assertEqual(Transaction.objects.count(), 10)
 
 
 class BalanceAPIViewTestCase(APITestCase):
