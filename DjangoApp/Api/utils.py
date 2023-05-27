@@ -35,5 +35,6 @@ def point_counter(transactions, points_to_spend) -> list:
         points = new_balance[i] - balance_dict[i]
         transaction = Transaction(payer=payer, points=points)
         spent_points_list.append({'payer': payer, 'points': points})
-        transaction.save()
+        if points != 0:
+            transaction.save()
     return spent_points_list
