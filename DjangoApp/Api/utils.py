@@ -20,12 +20,12 @@ def point_counter(transactions, points_to_spend) -> list:
         points = min(points_to_spend, transaction.points)
 
         if new_balance[payer] != 0:
-            if new_balance[payer] >= points:
-                new_balance[payer] -= points
-                points_to_spend -= points
-            else:
-                points_to_spend -= new_balance[payer]
+            new_balance[payer] -= points
+            if new_balance[payer] < 0:
+                points_to_spend -= abs(new_balance[payer])
                 new_balance[payer] = 0
+            else:
+                points_to_spend -= points
 
         if points_to_spend == 0:
             break
