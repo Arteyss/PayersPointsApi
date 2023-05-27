@@ -10,7 +10,7 @@ def get_balance() -> dict:
     return {item['payer']: item['total_points'] for item in balance}
 
 
-def point_counter(transactions, points_to_spend):
+def point_counter(transactions, points_to_spend) -> list:
     balance_dict = get_balance()
     new_balance = balance_dict.copy()
     spent_points_list = []
@@ -18,8 +18,14 @@ def point_counter(transactions, points_to_spend):
     for transaction in transactions:
         payer = transaction.payer
         points = min(points_to_spend, transaction.points)
-        new_balance[payer] -= points
-        points_to_spend -= points
+
+        if new_balance[payer] != 0:
+            new_balance[payer] -= points
+            if new_balance[payer] < 0:
+                points_to_spend -= abs(new_balance[payer])
+                new_balance[payer] = 0
+            else:
+                points_to_spend -= points
 
         if points_to_spend == 0:
             break
