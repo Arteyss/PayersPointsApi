@@ -1,6 +1,6 @@
 # Spend points api
 
-When a user spends points, they don't know or care which payer the points come from. But, our accounting team does care how the points are spent. There are two rules for determining what points to "spend" first:
+When a users spends points, they don't know or care which payer the points come from. There are two rules for determining what points to "spend" first:
 - Oldest points to be spent first (oldest based on transaction timestamp, not the order they’re received)
 - No payer's points to go negative.
 
